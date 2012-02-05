@@ -1,5 +1,5 @@
-hex
-===
+scala-hexmap
+============
 
 This is a scratchpad project for figuring out how to represent and work with 
 a hexagonal map (as in a game map).  Long-term, I'm interested in making 
