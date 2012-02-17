@@ -42,8 +42,8 @@ class CardinalSpec extends Specification {
     }
   }
 }
+
 class HexMapSpec extends Specification {
-  
   "The HexMap" should {
     "be initialiazable" in new map5 {
       hm must not be none
@@ -53,6 +53,19 @@ class HexMapSpec extends Specification {
     }
     "retain its width" in new map5 {
       hm.width must_== 5
+    }
+    "return data for a valid address" in new map5 {
+      hm.hex(Address(1,1)) must not be none
+    }
+    "throw an error for a negative address" in new map5 {
+      hm.hex(Address(0,0)) must throwA[InvalidAddressException]
+      hm.hex(Address(1,0)) must throwA[InvalidAddressException]
+      hm.hex(Address(0,1)) must throwA[InvalidAddressException]
+    }
+    "throw an error for an out-of-bounds address" in new map5 {
+      hm.hex(Address(6,6)) must throwA[InvalidAddressException]
+      hm.hex(Address(1,6)) must throwA[InvalidAddressException]
+      hm.hex(Address(6,1)) must throwA[InvalidAddressException]
     }
   }
 }

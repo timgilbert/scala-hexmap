@@ -29,7 +29,7 @@ class HexMap (h: Int, w: Int) {
   }
   
   def validAddress(a: Address): Boolean = {
-    a.x >= 1 && a.y >= 0 && a.y <= height && a.x <= width
+    a.x >= 1 && a.y >= 1 && a.y <= height && a.x <= width
   }
   
   //
