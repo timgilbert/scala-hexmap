@@ -1,27 +1,38 @@
 // Hex definition
+package com.github.timgilbert.hexmap
+
+class InvalidAddressException(msg: String) extends IllegalArgumentException
 
 class HexMap (height: Int, width: Int) {
+  
+  self: HexStore =>
+  
   // Get the hex at (x,y) or return None if that's off the map
-  def hex(addr: Address): Option[Hex] = { None }
+  def hex(addr: Address): Hex = {
+    if (!validAddress(addr)) throw new InvalidAddressException("Illegal address " + addr + " passed to hex()")
+    // Not certain this is a sensible approach, but let's start this way
+    new Hex(this, addr, data(addr))
+  }
   
   def getFaceNeighbors(addr: Address): Map[Cardinal, Hex] = {
-    /*val list = for (direction <- Cardinal.all(); n <- addr.neighbor(direction)) 
-      yield n
+    // It's tougher than I thought it would be getting this into a list comprehension form
+    Map
+    val list = for {
+      direction <- Cardinal.all()
+      newAddr = addr.neighbor(direction)
+      if (validAddress(newAddr))
+    } yield (direction -> hex(newAddr))
     
-    list.toMap*/
-    Map()
+    list toMap
   }
   
+  def validAddress(a: Address): Boolean = {
+    a.x >= 1 && a.y >= 0 && a.y <= height && a.x <= width
+  }
+  
+  //
   def getVertexNeighbors(addr: Address, vertex: VertexCardinal): Map[Cardinal, Hex] = { 
     Map() 
-  }
-}
-
-object HexMap {
-  def create(height: Int, width: Int): HexMap = { 
-    assert(height > 0)
-    assert(width > 0)
-    new HexMap(height, width) 
   }
 }
 
@@ -42,6 +53,7 @@ case object NorthWest extends Cardinal
 // An address in the coordinate system
 // Addresses start at (1,1) in the upper left of the map
 // Address(1,2) is offset down 1/2 square on the grid
+// Address(1,3) is another 1/2 square upwards
 case class Address(x: Int, y: Int) {
   def neighbor(direction: Cardinal): Address = {
     val x1 = direction match {
@@ -77,7 +89,7 @@ object EdgeCardinal extends Enumeration {
 
 
 // These are the six directions of the vertices (points) of a hex
-sealed case class VertexCardinal extends Enumeration {
+sealed case class VertexCardinal() extends Enumeration {
   val NorthEast = Value("ne")
   val East = Value("e")
   val SouthEast = Value("se")
@@ -86,9 +98,6 @@ sealed case class VertexCardinal extends Enumeration {
   val NorthWest = Value("nw")
 }
 
-// This class represents the data stored in a particular hex.
-// In practice this will probably be a type parameter on the Hex class
-abstract class HexData
 
 // One six-sided face
 class Hex(context: HexMap, address: Address, data: HexData) {
@@ -108,5 +117,3 @@ class Hex(context: HexMap, address: Address, data: HexData) {
     context.getVertexNeighbors(address, direction)
   }
 }
-
-class TestHexData (val color: String) extends HexData

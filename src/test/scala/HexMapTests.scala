@@ -1,6 +1,7 @@
+package com.github.timgilbert.hexmap
+
 import org.specs2.mutable._
 import org.specs2.specification._
-import HexMap._
 
 class AddressSpec extends Specification {
   "The (2,2) address" should {
@@ -58,7 +59,7 @@ class HexMapSpec extends Specification {
 
 
 trait map5 extends Scope {
-  val hm = HexMap.create(5, 5)
+  val hm: HexMap = TestHexStore.create()
 }
 
 trait addr22 extends Scope {
