@@ -3,9 +3,12 @@ package com.github.timgilbert.hexmap
 
 class InvalidAddressException(msg: String) extends IllegalArgumentException
 
-class HexMap (height: Int, width: Int) {
-  
+class HexMap (h: Int, w: Int) {
+  // Every instance of a HexMap will be mixed in with an apropriate HexStore
   self: HexStore =>
+  
+  val height = h
+  val width = w
   
   // Get the hex at (x,y) or return None if that's off the map
   def hex(addr: Address): Hex = {
@@ -16,7 +19,6 @@ class HexMap (height: Int, width: Int) {
   
   def getFaceNeighbors(addr: Address): Map[Cardinal, Hex] = {
     // It's tougher than I thought it would be getting this into a list comprehension form
-    Map
     val list = for {
       direction <- Cardinal.all()
       newAddr = addr.neighbor(direction)

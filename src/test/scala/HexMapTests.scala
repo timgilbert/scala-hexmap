@@ -48,12 +48,12 @@ class HexMapSpec extends Specification {
     "be initialiazable" in new map5 {
       hm must not be none
     }
-    /*"retain its height" in new map5 {
+    "retain its height" in new map5 {
       hm.height must_== 5
     }
     "retain its width" in new map5 {
       hm.width must_== 5
-    }*/
+    }
   }
 }
 
