@@ -109,6 +109,10 @@ class Hex(context: HexMap, address: Address, data: HexData) {
     neighbors().get(direction)
   }
   
+  override def toString(): String = {
+    "Hex(" + address.x + "," + address.y + ")"
+  }
+  
   // All of the neighbors of this hex
   def neighbors(): Map[Cardinal, Hex] = {
     context.getFaceNeighbors(address)

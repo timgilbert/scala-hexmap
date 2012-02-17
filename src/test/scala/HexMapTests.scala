@@ -67,9 +67,13 @@ class HexMapSpec extends Specification {
       hm.hex(Address(1,6)) must throwA[InvalidAddressException]
       hm.hex(Address(6,1)) must throwA[InvalidAddressException]
     }
+    "find the proper neighbors for Address(1,1)" in new map5 {
+      val neighbors = hm.getFaceNeighbors(Address(1,1))
+      println (neighbors)
+      neighbors.size must_== 2
+    }
   }
 }
-
 
 trait map5 extends Scope {
   val hm: HexMap = TestHexStore.create()
