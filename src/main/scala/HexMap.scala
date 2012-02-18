@@ -66,13 +66,26 @@ case class Address(x: Int, y: Int) {
       case NorthEast => x + 1
       case SouthEast => x + 1
     }
-    val y1 = direction match {
-      case NorthWest => y 
-      case North =>     y - 1
-      case NorthEast => y
-      case SouthEast => y + 1
-      case South =>     y + 1
-      case SouthWest => y + 1
+    val y1 = if (y % 2 == 0) {
+      // Even column
+      direction match {
+        case North =>     y - 1
+        case NorthEast => y
+        case SouthEast => y + 1
+        case South =>     y + 1
+        case SouthWest => y + 1
+        case NorthWest => y 
+      }
+    } else {
+      // Odd column
+      direction match {
+        case North =>     y - 1
+        case NorthEast => y - 1
+        case SouthEast => y 
+        case South =>     y + 1
+        case SouthWest => y 
+        case NorthWest => y - 1
+      }
     }
     new Address(x1, y1)
   }
