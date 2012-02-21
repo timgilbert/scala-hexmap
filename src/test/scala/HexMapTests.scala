@@ -3,6 +3,17 @@ package com.github.timgilbert.hexmap
 import org.specs2.mutable._
 import org.specs2.specification._
 
+/** Used in address unit tests */
+trait addr22 extends Scope {
+  val a = new Address(2,2)
+}
+
+/** Used in address unit tests */
+trait addr32 extends Scope {
+  val a = new Address(3,2)
+}
+
+/** Address Unit tests */
 class AddressSpec extends Specification {
   "The (2,2) address" should {
     "be equal to itself" in new addr22 {
@@ -25,6 +36,14 @@ class AddressSpec extends Specification {
     }
     "have (1,3) to the SouthWest" in new addr22 {
       a.neighbor(SouthWest) must_== new Address(1,3)
+    }
+    "have orthogonal directions" in new addr22 {
+      a.neighbor(North).neighbor(South) must_== a
+      a.neighbor(NorthWest).neighbor(SouthEast) must_== a
+      a.neighbor(NorthEast).neighbor(SouthWest) must_== a
+      a.neighbor(South).neighbor(North) must_== a
+      a.neighbor(SouthWest).neighbor(NorthEast) must_== a
+      a.neighbor(SouthEast).neighbor(NorthWest) must_== a
     }
   }
   "The (3,2) address" should {
@@ -49,9 +68,18 @@ class AddressSpec extends Specification {
     "have (2,2) to the SouthWest" in new addr32 {
       a.neighbor(SouthWest) must_== new Address(2,2)
     }
+    "have orthogonal directions" in new addr22 {
+      a.neighbor(North).neighbor(South) must_== a
+      a.neighbor(NorthWest).neighbor(SouthEast) must_== a
+      a.neighbor(NorthEast).neighbor(SouthWest) must_== a
+      a.neighbor(South).neighbor(North) must_== a
+      a.neighbor(SouthWest).neighbor(NorthEast) must_== a
+      a.neighbor(SouthEast).neighbor(NorthWest) must_== a
+    }
   }
 }
 
+/** Tests for the cardinal directions */
 class CardinalSpec extends Specification {
   "The Cardinal class" should {
     "have 6 directions" in {
@@ -66,31 +94,50 @@ class CardinalSpec extends Specification {
   }
 }
 
+/** Used in HexMap unit tests - see below */
+trait map4 extends Scope {
+  /** Test store implementation */
+  trait TestHexStore extends HexStore {
+    case class TestData(color: String) extends HexData 
+
+    def data(addr: Address): HexData = {
+      new TestData("Red")
+    }
+  }
+  /** Test store factory method */
+  object TestHexStore {
+     def create(): HexMap = {
+       new HexMap(4, 4) with TestHexStore
+     }
+  }
+  /** The test map */
+  val hm: HexMap = TestHexStore.create()
+}
+
+/** HexMap unit tests */
 class HexMapSpec extends Specification {
   "The HexMap" should {
-    "be initialiazable" in new map5 {
+    "be initialiazable" in new map4 {
       hm must not be none
     }
-    "retain its height" in new map5 {
-      hm.height must_== 5
+    "retain its dimensions" in new map4 {
+      hm.height must_== 4
+      hm.width must_== 4
     }
-    "retain its width" in new map5 {
-      hm.width must_== 5
-    }
-    "return data for a valid address" in new map5 {
+    "return data for a valid address" in new map4 {
       hm.hex(1,1) must not be none
     }
-    "throw an error for a negative address" in new map5 {
+    "throw an error for a negative address" in new map4 {
       hm.hex(0,0) must throwA[InvalidAddressException]
       hm.hex(1,0) must throwA[InvalidAddressException]
       hm.hex(Address(0,1)) must throwA[InvalidAddressException]
     }
-    "throw an error for an out-of-bounds address" in new map5 {
+    "throw an error for an out-of-bounds address" in new map4 {
       hm.hex(6,6) must throwA[InvalidAddressException]
       hm.hex(1,6) must throwA[InvalidAddressException]
       hm.hex(6,1) must throwA[InvalidAddressException]
     }
-    "find the proper neighbors for Address(1,1)" in new map5 {
+    "find the proper neighbors for Address(1,1)" in new map4 {
       val neighbors = hm.getFaceNeighbors(Address(1,1))
       println (neighbors)
       neighbors.size must_== 2
@@ -100,17 +147,7 @@ class HexMapSpec extends Specification {
   }
 }
 
-trait map5 extends Scope {
-  val hm: HexMap = TestHexStore.create()
-}
 
-trait addr22 extends Scope {
-  val a = new Address(2,2)
-}
-
-trait addr32 extends Scope {
-  val a = new Address(3,2)
-}
 
 /*
 
