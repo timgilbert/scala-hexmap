@@ -17,6 +17,11 @@ class HexMap (h: Int, w: Int) {
     new Hex(this, addr, data(addr))
   }
   
+  // Shortcut method
+  def hex(x: Int, y:Int): Hex = {
+    hex(Address(x, y))
+  }
+  
   def getFaceNeighbors(addr: Address): Map[Cardinal, Hex] = {
     // It's tougher than I thought it would be getting this into a list comprehension form
     val list = for {
@@ -30,11 +35,6 @@ class HexMap (h: Int, w: Int) {
   
   def validAddress(a: Address): Boolean = {
     a.x >= 1 && a.y >= 1 && a.y <= height && a.x <= width
-  }
-  
-  //
-  def getVertexNeighbors(addr: Address, vertex: VertexCardinal): Map[Cardinal, Hex] = { 
-    Map() 
   }
 }
 
@@ -52,10 +52,14 @@ case object South     extends Cardinal
 case object SouthWest extends Cardinal
 case object NorthWest extends Cardinal
 
-// An address in the coordinate system
-// Addresses start at (1,1) in the upper left of the map
-// Address(1,2) is offset down 1/2 square on the grid
-// Address(1,3) is another 1/2 square upwards
+/**
+ * An address in the coordinate system.
+ * 
+ * Addresses start at (1,1) in the upper left of the map.
+ * 
+ * Address(1,2) is offset down 1/2 square on the grid;
+ * Address(1,3) is another 1/2 square upwards to keep the wh
+*/
 case class Address(x: Int, y: Int) {
   def neighbor(direction: Cardinal): Address = {
     val x1 = direction match {
@@ -66,7 +70,7 @@ case class Address(x: Int, y: Int) {
       case NorthEast => x + 1
       case SouthEast => x + 1
     }
-    val y1 = if (y % 2 == 0) {
+    val y1 = if (x % 2 == 0) {
       // Even column
       direction match {
         case North =>     y - 1
@@ -89,30 +93,10 @@ case class Address(x: Int, y: Int) {
     }
     new Address(x1, y1)
   }
+  def neighbors(): Map[Cardinal, Address] = {
+    (for (d <- Cardinal.all()) yield (d -> neighbor(d))) toMap
+  }
 }
-
-// Not positive if Enumerations are the proper representation for these but let's give it a go
-// Note that we are assuming hex grids in which the top is flat (versus the sides being flat)
-object EdgeCardinal extends Enumeration {
-  val North     = Value("n")
-  val NorthEast = Value("ne")
-  val SouthEast = Value("se")
-  val South     = Value("s")
-  val SouthWest = Value("sw")
-  val NorthWest = Value("nw")
-}
-
-
-// These are the six directions of the vertices (points) of a hex
-sealed case class VertexCardinal() extends Enumeration {
-  val NorthEast = Value("ne")
-  val East = Value("e")
-  val SouthEast = Value("se")
-  val SouthWest = Value("sw")
-  val West = Value("w")
-  val NorthWest = Value("nw")
-}
-
 
 // One six-sided face
 class Hex(context: HexMap, address: Address, data: HexData) {
@@ -129,10 +113,5 @@ class Hex(context: HexMap, address: Address, data: HexData) {
   // All of the neighbors of this hex
   def neighbors(): Map[Cardinal, Hex] = {
     context.getFaceNeighbors(address)
-  }
-  
-  // At the vertex there are three possible neighbors, including this one
-  def vertex(direction: VertexCardinal): Map[Cardinal, Hex] = {
-    context.getVertexNeighbors(address, direction)
   }
 }
