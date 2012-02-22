@@ -98,10 +98,10 @@ class CardinalSpec extends Specification {
 trait map4 extends Scope {
   /** Test store implementation */
   trait TestHexStore extends HexStore {
-    case class TestData(color: String) extends HexData 
+    case class TestData(a: Address, color: String) extends HexData (a)
 
     def data(addr: Address): HexData = {
-      new TestData("Red")
+      new TestData(addr, "Red")
     }
   }
   /** Test store factory method */

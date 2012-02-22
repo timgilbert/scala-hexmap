@@ -3,6 +3,15 @@ package com.github.timgilbert.hexmap
 
 class InvalidAddressException(msg: String) extends IllegalArgumentException
 
+/**
+ * A hexmap represents an entire hexagonal grid.  The grid is addressed using (x,y) 
+ * pairs, where (1,1) is the hex at the top left.
+ * 
+ * Every HexMap instance will be mixed in with a HexStore instance, whose purpose 
+ * is to support map creation (via a create() method) and to retrieve actual data 
+ * 
+ * @see HexStore.scala
+ */
 class HexMap (h: Int, w: Int) {
   // Every instance of a HexMap will be mixed in with an apropriate HexStore
   self: HexStore =>
@@ -10,20 +19,28 @@ class HexMap (h: Int, w: Int) {
   val height = h
   val width = w
   
-  // Get the hex at (x,y) or return None if that's off the map
+  /**
+   * Get the Hex instance at (x,y)
+   * @param addr the address to retrieve
+   * @throws InvalidAddressException if x or y is < 0 or > map bounds
+   */
   def hex(addr: Address): Hex = {
     if (!validAddress(addr)) throw new InvalidAddressException("Illegal address " + addr + " passed to hex()")
     // Not certain this is a sensible approach, but let's start this way
     new Hex(this, addr, data(addr))
   }
   
-  // Shortcut method
-  def hex(x: Int, y:Int): Hex = {
-    hex(Address(x, y))
-  }
+  /** Shortcut method */
+  def hex(x: Int, y:Int): Hex = hex(Address(x, y))
   
+  /**
+   * Get the immediate neighbors of a hex instance 
+   * @return a Map from the six cardinal directions to the neighboring hexes 
+   *         on those sides, if any.
+   */
   def getFaceNeighbors(addr: Address): Map[Cardinal, Hex] = {
     // It's tougher than I thought it would be getting this into a list comprehension form
+    // and removing the list variable here
     val list = for {
       direction <- Cardinal.all()
       newAddr = addr.neighbor(direction)
@@ -33,6 +50,7 @@ class HexMap (h: Int, w: Int) {
     list toMap
   }
   
+  /** @return true if the given address refers to a valid point on the map */
   def validAddress(a: Address): Boolean = {
     a.x >= 1 && a.y >= 1 && a.y <= height && a.x <= width
   }
@@ -41,6 +59,7 @@ class HexMap (h: Int, w: Int) {
 // These are the six directions of the edges of a hex.
 abstract sealed class Cardinal 
 object Cardinal {
+  /** @return a list of every address */
   def all(): List[Cardinal] = {
     List(NorthWest, North, NorthEast, SouthEast, South, SouthWest)
   }
@@ -61,6 +80,10 @@ case object NorthWest extends Cardinal
  * Address(1,3) is another 1/2 square upwards to keep the wh
 */
 case class Address(x: Int, y: Int) {
+  /** 
+   * Get the neighbor of this address in the given direction.  Note that this may return 
+   * invalid addresses (relative to a given HexMap).
+   */
   def neighbor(direction: Cardinal): Address = {
     val x1 = direction match {
       case North =>     x
@@ -98,7 +121,9 @@ case class Address(x: Int, y: Int) {
   }
 }
 
-// One six-sided face
+/**
+ * One six-sided face
+ */
 class Hex(context: HexMap, address: Address, data: HexData) {
   // Getting the neighbor of a hex returns the hex in that 
   // direction, or None
