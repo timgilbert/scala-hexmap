@@ -20,7 +20,7 @@ abstract class HexData(a: Address) {
 }
 
 /**
- * This trait defines the 
+ * This trait defines the fundamental interface to a data store for hexmaps
  */
 abstract trait HexStore {
   def data(addr: Address): HexData
