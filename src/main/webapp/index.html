@@ -1,16 +1,97 @@
 <html>
 <head>
   <title>Hex map test</title>
-  <script type="text/javascript" src="images/jquery-1.7.1.js"></script>          
-  <link rel="stylesheet" type="text/css" href="images/hexmap.css"/>
+  <script type="text/javascript" src="js/jquery-1.7.1.js"></script>          
+  <link rel="stylesheet" type="text/css" href="css/hexmap.css"/>
+
+<style type="text/css">
+  /* Keeping this here for now */
+  div#hexmap {
+    position: relative;
+  }
+  div#templates {
+    display: none;
+  }
+</style>
+
+<script type="text/javascript">
+  $(function() {
+    populate(getHexMap(4));
+  });
+
+  // Return a list of lists of strings. The top-level list represents 
+  // columns, and each column list is a series of strings where the 
+  // string value corresponds to the name of a tile in templates, below.
+  function getHexMap(bounds) {
+    // For testing - return a random tile, 66% desert, 33% ocean
+    function tile() {
+      var name = "desert";
+      if (Math.floor(Math.random() * 3) == 0) {
+        name = "ocean";
+      }
+      return name;
+    }
+    var columns = [];
+    for (var c = 0; c < bounds; c++) {
+      var row = [];
+      for (var r = 0; r < bounds; r++) {
+        row.push(tile());
+      }
+      columns.push(row);
+    }
+    return columns;
+  }
+
+  function populate(hexmap) {
+    for (var x = 0; x < hexmap.length; x++) {
+      var column = hexmap[x];
+      for (var y = 0; y < column.length; y++) {
+        var tile = column[y];
+        placeTile(tile, x, y);
+      }
+    }
+  }
   
-  <script type="text/javascript">
-    $(function() {
-      $("#hexmap").click(function() {
-        alert("Hi there")
-      });
-    });
-  </script>
+  function placeTile(tile, x, y) {
+    var tile$ = $("." + tile, "#templates").children().clone();
+    tile$.data({"column": x, "row": y})
+    
+    console.debug("(" + x + "," + y + "): " + tile);
+    console.debug(tile$);
+    
+    tile$.hexMapPosition(x, y).appendTo($('#hexmap'));
+  }
+
+  // jQuery wrapper to place a tile based on row and column data attached to the element set
+  (function($) {
+    $.fn.hexMapPosition = function(row, column) {
+
+      //var row = this.data("row");
+      //var column = this.data("column");
+      
+      var tile_width = this.attr("width");
+      var tile_height = this.attr("height");
+      
+      var y_offset = tile_height / 2;
+      var x_offset = tile_width / 4;
+      
+      var xpos = row * (tile_width - x_offset);
+      var ypos = column * tile_height;
+      
+      if (row % 2 == 0) {
+        ypos -= y_offset;
+        
+      }
+      
+      console.log("hmp(" + row + "," + column + "): (" + xpos + "," + ypos + ")" );
+      
+      var style = {"position": "absolute", "top": ypos, "left": xpos};
+      
+      return this.css(style);
+    }
+  })(jQuery);
+
+</script>
 </head>
 
 <body>
@@ -18,14 +99,20 @@
 <h1>Hex map</h1>
 
 <div id="hexmap">
-  abcdef
+</div>
+
+<!-- templates -->
+<div id="templates">
+  <h1>Templates</h1>
+  
+  <div class="tiles desert">
+    <img src="images/tiles/desert.png" width="72" height="72"/>
+  </div>
+  <div class="tiles ocean">
+    <img src="images/tiles/ocean.png" width="72" height="72"/>
+  </div>
+  
 </div>
 
 </body>
 </html>
-
-<!--
-
-d8:30:62:54:11:4c
-
--->
