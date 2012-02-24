@@ -4,19 +4,9 @@
   <script type="text/javascript" src="js/jquery-1.7.1.js"></script>          
   <link rel="stylesheet" type="text/css" href="css/hexmap.css"/>
 
-<style type="text/css">
-  /* Keeping this here for now */
-  div#hexmap {
-    position: relative;
-  }
-  div#templates {
-    display: none;
-  }
-</style>
-
 <script type="text/javascript">
   $(function() {
-    populate(getHexMap(4));
+    populate(getHexMap(6));
   });
 
   // Return a list of lists of strings. The top-level list represents 
@@ -47,7 +37,9 @@
       var column = hexmap[x];
       for (var y = 0; y < column.length; y++) {
         var tile = column[y];
-        placeTile(tile, x, y);
+        placeTile(tile, x, y).bind("mouseover", function(event) {
+          $.tooltip($(this).data("row") + ", " + $(this).data("column"));
+        });
       }
     }
   }
@@ -60,6 +52,7 @@
     console.debug(tile$);
     
     tile$.hexMapPosition(x, y).appendTo($('#hexmap'));
+    return tile$;
   }
 
   // jQuery wrapper to place a tile based on row and column data attached to the element set
@@ -72,15 +65,15 @@
       var tile_width = this.attr("width");
       var tile_height = this.attr("height");
       
+      // Haven't done the math to check these but they work
       var y_offset = tile_height / 2;
       var x_offset = tile_width / 4;
       
-      var xpos = row * (tile_width - x_offset);
-      var ypos = column * tile_height;
+      var xpos = 0 + (row * (tile_width - x_offset));
+      var ypos = 0 + (column * tile_height);
       
       if (row % 2 == 0) {
         ypos -= y_offset;
-        
       }
       
       console.log("hmp(" + row + "," + column + "): (" + xpos + "," + ypos + ")" );
@@ -91,28 +84,49 @@
     }
   })(jQuery);
 
+  // tooltip function
+  (function($) {
+    $.tooltip = function(string) {
+      $('#tooltip').text(string);
+    }
+  })(jQuery);
+
 </script>
 </head>
 
 <body>
-
-<h1>Hex map</h1>
-
-<div id="hexmap">
-</div>
-
-<!-- templates -->
-<div id="templates">
-  <h1>Templates</h1>
+<div id="container">
   
-  <div class="tiles desert">
-    <img src="images/tiles/desert.png" width="72" height="72"/>
-  </div>
-  <div class="tiles ocean">
-    <img src="images/tiles/ocean.png" width="72" height="72"/>
+  <div id="header">
+    <h1>header</h1>
   </div>
   
-</div>
+  <div id="body">
+
+    <p/> <!-- god, I hate css positioning -->
+    
+    <div id="hexmap">
+    </div>
+
+
+    <!-- templates -->
+    <div id="templates" class="hidden">
+      <h1>Templates</h1>
+  
+      <div class="tiles desert">
+        <img src="images/tiles/desert.png" width="72" height="72"/>
+      </div>
+      <div class="tiles ocean">
+        <img src="images/tiles/ocean.png" width="72" height="72"/>
+      </div>
+    </div>
+  
+  </div>
+  
+  <div id="footer">
+    <div id="tooltip">
+    </div>
+  </div>
 
 </body>
 </html>
