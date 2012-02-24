@@ -1,0 +1,5 @@
+These files are taken from Battle for Wesnoth, where they have been 
+licensed (extremely confusingly) under the GPLv2 license.
+
+http://www.wesnoth.org/
+http://forums.wesnoth.org/viewtopic.php?f=2&t=22098&start=105#p519169
