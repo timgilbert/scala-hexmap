@@ -1,4 +1,9 @@
 /* hexmap.css */
+
+/* 
+    Due to my general hatred of CSS-based positioning I have taken the layout stuff from here:
+    http://matthewjamestaylor.com/blog/keeping-footers-at-the-bottom-of-the-page
+ */
 html, body {
   margin:0;
   padding: 0;
