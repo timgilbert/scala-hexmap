@@ -5,91 +5,108 @@
   <link rel="stylesheet" type="text/css" href="css/hexmap.css"/>
 
 <script type="text/javascript">
-  $(function() {
-    populate(getHexMap(6));
-  });
 
-  // Return a list of lists of strings. The top-level list represents 
-  // columns, and each column list is a series of strings where the 
-  // string value corresponds to the name of a tile in templates, below.
-  function getHexMap(bounds) {
-    // For testing - return a random tile, 66% desert, 33% ocean
-    function tile() {
-      var name = "desert";
-      if (Math.floor(Math.random() * 3) == 0) {
-        name = "ocean";
-      }
-      return name;
-    }
+  /* 
+    Return a list of lists of strings. The top-level list 
+    represents columns, and each column list is a series of 
+    strings where the string value corresponds to the name
+    of a tile in the templates div.
+  */
+  function getHexMap(numColumns, numRows) {
     var columns = [];
-    for (var c = 0; c < bounds; c++) {
+    for (var c = 0; c < numColumns; c++) {
       var row = [];
-      for (var r = 0; r < bounds; r++) {
-        row.push(tile());
+      for (var r = 0; r < numRows; r++) {
+        row.push(randomTile());
       }
       columns.push(row);
     }
     return columns;
   }
 
+  // For testing - return a random tile, 66% desert, 33% ocean
+  function randomTile() {
+    // There's probably a way to get this out of the DOM via jQuery
+    var choices = ["blue", "brown", "darkgreen", "grey", "lightgreen", "yellow"];
+    var num = Math.floor(Math.random() * choices.length);
+    return choices[num];
+  }
+
+  /*
+    Given a 2d array like that returned from getHexMap(),
+    iterate through it and position the named tiles in 
+    their proper places in the hexmap div
+  */
   function populate(hexmap) {
     for (var x = 0; x < hexmap.length; x++) {
       var column = hexmap[x];
       for (var y = 0; y < column.length; y++) {
-        var tile = column[y];
-        placeTile(tile, x, y).bind("mouseover", function(event) {
-          $.tooltip($(this).data("row") + ", " + $(this).data("column"));
+
+        // clone the tile and place it
+        var tile = placeTile(column[y], x, y);
+
+        // Add some event handling
+        tile.bind("mouseover", function(event) {
+          var message = "Hex position (" 
+              + $(this).data("row") + ", " 
+              + $(this).data("column") + ")";
+          $('#tooltip').text(message);
         });
       }
     }
   }
-  
-  function placeTile(tile, x, y) {
-    var tile$ = $("." + tile, "#templates").children().clone();
-    tile$.data({"column": x, "row": y})
-    
-    console.debug("(" + x + "," + y + "): " + tile);
-    console.debug(tile$);
-    
-    tile$.hexMapPosition(x, y).appendTo($('#hexmap'));
-    return tile$;
+
+  /*
+    Given a tile name and row/column numbers, make a clone 
+    of the tile and place it in the hexmap.
+  */
+  function placeTile(name, x, y) {
+    var tile = $("." + name, "#templates").children().clone();
+
+    tile.hexMapPosition(x, y).appendTo($('#hexmap'));
+    return tile;
   }
 
-  // jQuery wrapper to place a tile based on row and column data attached to the element set
+  /*
+    jQuery extension to place a tile based on row and column data 
+    attached to the element set
+  */
   (function($) {
     $.fn.hexMapPosition = function(row, column) {
 
-      //var row = this.data("row");
-      //var column = this.data("column");
-      
+      // We store the row and column in the tile for 
+      // use in the tooltip stuff
+      this.data({"row": row, "column": column});
+
       var tile_width = this.attr("width");
       var tile_height = this.attr("height");
-      
+
       // Haven't done the math to check these but they work
       var y_offset = tile_height / 2;
       var x_offset = tile_width / 4;
-      
+
       var xpos = 0 + (row * (tile_width - x_offset));
       var ypos = 0 + (column * tile_height);
-      
+
+      // Am I really the only developer on earth who
+      // hates CSS positioning?
+      ypos += 40; 
+
       if (row % 2 == 0) {
         ypos -= y_offset;
       }
-      
-      console.log("hmp(" + row + "," + column + "): (" + xpos + "," + ypos + ")" );
-      
-      var style = {"position": "absolute", "top": ypos, "left": xpos};
-      
+
+      var style = {"position": "absolute", 
+                   "top": ypos, "left": xpos};
+
       return this.css(style);
     }
   })(jQuery);
 
-  // tooltip function
-  (function($) {
-    $.tooltip = function(string) {
-      $('#tooltip').text(string);
-    }
-  })(jQuery);
+
+  $(function() {
+    populate(getHexMap(12, 8));
+  });
 
 </script>
 </head>
@@ -113,14 +130,24 @@
     <div id="templates" class="hidden">
       <h1>Templates</h1>
   
-      <div class="tiles desert">
-        <img src="images/tiles/desert.png" width="72" height="72"/>
+      <div class="tile blue">
+        <img src="images/tiles/hex-blue.png" width="92" height="80"/>
       </div>
-      <div class="tiles ocean">
-        <img src="images/tiles/ocean.png" width="72" height="72"/>
+      <div class="tile brown">
+        <img src="images/tiles/hex-brown.png" width="92" height="80"/>
       </div>
-    </div>
-  
+      <div class="tile darkgreen">
+        <img src="images/tiles/hex-darkgreen.png" width="92" height="80"/>
+      </div>
+      <div class="tile grey">
+        <img src="images/tiles/hex-darkgreen.png" width="92" height="80"/>
+      </div>
+      <div class="tile lightgreen">
+        <img src="images/tiles/hex-darkgreen.png" width="92" height="80"/>
+      </div>
+      <div class="tile yellow">
+        <img src="images/tiles/hex-yellow.png" width="92" height="80"/>
+      </div>
   </div>
   
   <div id="footer">
