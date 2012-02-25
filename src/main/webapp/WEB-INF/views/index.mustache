@@ -1,0 +1,60 @@
+<html>
+<head>
+  <title>Hex map test</title>
+  <script type="text/javascript" src="js/jquery-1.7.1.js"></script>          
+  <script type="text/javascript" src="js/hexmap.js"></script>          
+  <link rel="stylesheet" type="text/css" href="css/hexmap.css"/>
+
+  <script type="text/javascript">
+    $(function() {
+      populate(getHexMap(12, 8));
+    });
+  </script>
+</head>
+
+<body>
+<div id="container">
+  
+  <div id="header">
+    <h1>Hex map test</h1>
+  </div>
+  
+  <div id="body">
+
+    <p/> <!-- god, I hate css positioning -->
+    
+    <div id="hexmap">
+    </div>
+
+
+    <!-- templates -->
+    <div id="templates" class="hidden">
+      <h1>Templates</h1>
+  
+      <div class="tile blue">
+        <img src="images/tiles/hex-blue.png" width="92" height="80"/>
+      </div>
+      <div class="tile brown">
+        <img src="images/tiles/hex-brown.png" width="92" height="80"/>
+      </div>
+      <div class="tile darkgreen">
+        <img src="images/tiles/hex-darkgreen.png" width="92" height="80"/>
+      </div>
+      <div class="tile grey">
+        <img src="images/tiles/hex-darkgreen.png" width="92" height="80"/>
+      </div>
+      <div class="tile lightgreen">
+        <img src="images/tiles/hex-darkgreen.png" width="92" height="80"/>
+      </div>
+      <div class="tile yellow">
+        <img src="images/tiles/hex-yellow.png" width="92" height="80"/>
+      </div>
+  </div>
+  
+  <div id="footer">
+    <div id="tooltip">
+    </div>
+  </div>
+
+</body>
+</html>
