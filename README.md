@@ -10,7 +10,7 @@ I've mostly been looking at some useful pages from [Amit Patel][amit] at
 Stanford.
 
 Those interested in displaying hexagonal grid maps with HTML and jQuery may 
-be want to check out this [early prototype available on jsfiddle][jsfiddle].
+want to check out this [early prototype available on jsfiddle][jsfiddle].
 
 [wargames]: http://dwarfstar.brainiac.com/ds_index.html
 [map]: http://dwarfstar.brainiac.com/barbarianprince/barbarianprince_map1.jpg
