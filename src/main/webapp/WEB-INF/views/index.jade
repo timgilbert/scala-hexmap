@@ -6,16 +6,7 @@
       populate(getHexMap(12, 8));
     });
     $(function() {
-      $("#newMap").click(function(event) {
-        console.debug("Hey there");
-        // Get the new map via Ajax
-        $.getJSON(
-          "/map/new.json", {}, 
-          function(response) {
-            console.debug("Resp: " + response);
-          }
-        );
-      });
+      $("#newMap").click(getNewMap);
     });
   
 / body starts here

@@ -30,6 +30,8 @@ function randomTile() {
   their proper places in the hexmap div
 */
 function populate(hexmap) {
+  // Clear the old map, if any
+  $('#hexmap').children().remove();
   for (var x = 0; x < hexmap.length; x++) {
     var column = hexmap[x];
     for (var y = 0; y < column.length; y++) {
@@ -39,13 +41,17 @@ function populate(hexmap) {
 
       // Add some event handling
       tile.bind("mouseover", function(event) {
-        var message = "Hex position (" 
-            + $(this).data("row") + ", " 
-            + $(this).data("column") + ")";
-        $('#tooltip').text(message);
+        $.tooltip("Hex position (" + $(this).data("row") + ", " + $(this).data("column") + ")");
       });
     }
   }
+}
+
+function getNewMap(event) {
+  // Get a new map via Ajax
+  $.getJSON("/map/new.json", function(data) {
+      populate(data["map"]);
+  });
 }
 
 /*
@@ -58,6 +64,16 @@ function placeTile(name, x, y) {
   tile.hexMapPosition(x, y).appendTo($('#hexmap'));
   return tile;
 }
+
+/*
+  jQuery extension to place a tile based on row and column data 
+  attached to the element set
+*/
+(function($) {
+  $.tooltip = function(message) {
+    $('#tooltip').text(message);
+  }
+})(jQuery);
 
 /*
   jQuery extension to place a tile based on row and column data 
@@ -84,13 +100,16 @@ function placeTile(name, x, y) {
     // hates CSS positioning?
     ypos += 40; 
 
-    if (row % 2 == 0) {
-      ypos -= y_offset;
+    if (row % 2 == 1) {
+      ypos += y_offset;
     }
 
+    console.debug("Placing hex(r " + row + ", c" + column 
+                + ") at (" + xpos + ","  + ypos + ")");
+  
     var style = {"position": "absolute", 
                  "top": ypos, "left": xpos};
-
+    
     return this.css(style);
   }
 })(jQuery);

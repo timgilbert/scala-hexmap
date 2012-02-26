@@ -6,11 +6,11 @@ import scalate.ScalateSupport
 class HexMapServlet extends ScalatraServlet with ScalateSupport {
   get("/") {
     contentType = "text/html"
-    templateEngine.layout("WEB-INF/views/index.mustache")
+    templateEngine.layout("WEB-INF/views/index.jade")
   }
   
   get("/map/new.json") {
     contentType = "application/json"
-    "[['blue', 'yellow', 'blue'], ['blue', 'yellow', 'blue'], ['yellow', 'yellow', 'yellow']]"
+    """{ "map" : [["blue", "brown", "yellow"], ["lightgreen", "yellow", "blue"], ["grey", "grey", "darkgreen"]] }"""
   }
 }
