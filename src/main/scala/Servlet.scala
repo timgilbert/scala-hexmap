@@ -15,4 +15,10 @@ class HexMapServlet extends ScalatraServlet with ScalateSupport {
                   ["lightgreen", "yellow", "blue"], 
                   ["grey", "grey", "darkgreen"]] }"""
   }
+
+  /** todo: increase randomness */
+  get("/map/random-path.json") {
+    contentType = "application/json"
+    """{ "path" : [ [1,1], [2,2], [3,2], [3,3], [3,4] ] }"""
+  }
 }

@@ -58,12 +58,27 @@ function populate(hexmap) {
   }
 }
 
+/*
+  Get a new map from the server
+  XXX rename this
+*/
 function getNewMap(event) {
   // Get a new map via Ajax
   $.getJSON("/map/new.json", function(data) {
       populate(data["map"]);
   });
 }
+
+/*
+  Get a path (really a list of points) from the server and highlight it.
+*/
+function getServerRandomPath() {
+  // Get a new map via Ajax
+  $.getJSON("/map/random-path.json", function(data) {
+      selectPath(data["path"]).highlightHex("red");
+  });
+}
+
 
 /*
   Given a tile name and row/column numbers, make a clone 

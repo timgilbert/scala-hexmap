@@ -7,6 +7,7 @@
     });
     $(function() {
       $("#newMap").click(getNewMap);
+      $("#randomPath").click(getServerRandomPath);
       $("#highlight").click(function(event) {
         //$("[data-column=3]", "#hexmap").highlightHex("red");
         selectPath([[1,1], [1,2], [2,1], [2,2]]).highlightHex("red");
@@ -26,6 +27,7 @@ p
 #controls
   button#randomMap New Random Map
   button#newMap Server Map
+  button#randomPath Random Path
   button#highlight Highlight Test
   button#deHighlight Remove Highlights
 
