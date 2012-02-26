@@ -19,7 +19,7 @@ function getHexMap(numColumns, numRows) {
 // For testing - return a random tile
 function randomTile() {
   // There's probably a way to get this out of the DOM via jQuery
-  var choices = ["blue", "brown", "darkgreen", "grey", "lightgreen", "yellow"];
+  var choices = ["blue", "brown", "darkgreen", "grey", "white", "lightgreen"];
   var num = Math.floor(Math.random() * choices.length);
   return choices[num];
 }
@@ -41,6 +41,7 @@ function populate(hexmap) {
 
       // Add some event handling
       tile.bind("mouseover", function(event) {
+        //$(this).highlightHex();
         $.tooltip("Hex position (" + $(this).data("row") + ", " + $(this).data("column") + ")");
       });
     }
@@ -80,7 +81,7 @@ function placeTile(name, x, y) {
   attached to the element set
 */
 (function($) {
-  $.fn.hexMapPosition = function(row, column) {
+  $.fn.hexMapPosition = function(row, column, additionalStyle) {
 
     // We store the row and column in the tile for 
     // use in the tooltip stuff
@@ -104,12 +105,38 @@ function placeTile(name, x, y) {
       ypos += y_offset;
     }
 
-    console.debug("Placing hex(r " + row + ", c" + column 
-                + ") at (" + xpos + ","  + ypos + ")");
+    //console.debug("Placing hex(r " + row + ", c" + column + ") at (" + xpos + ","  + ypos + ")");
   
     var style = {"position": "absolute", 
                  "top": ypos, "left": xpos};
+    $.extend(style, additionalStyle);   // nb, not sure this is really needed vs css classes
     
     return this.css(style);
+  }
+})(jQuery);
+
+/*
+  Draw a highlight on the given hex
+*/
+function highlightHex(row, column) {
+  var tile = $(".highlight", "#templates").children().clone();
+  
+  //console.debug("Highlighting " + row + "," + column);
+  tile.hexMapPosition(row, column).appendTo($('#hexmap'));
+}
+
+// hmm
+(function($) {
+  $.fn.highlightHexXXX = function(row, column) {
+    
+    var row = $(this).data("row");
+    var column = $(this).data("column");
+    
+    var tile = $(".highlight", "#templates").children().clone();
+  
+    var style = {"z-index": 100};
+    
+    tile.hexMapPosition(row, column, style).appendTo($('#hexmap'));
+    return this;
   }
 })(jQuery);

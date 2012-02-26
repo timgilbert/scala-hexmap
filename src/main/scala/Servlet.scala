@@ -11,6 +11,8 @@ class HexMapServlet extends ScalatraServlet with ScalateSupport {
   
   get("/map/new.json") {
     contentType = "application/json"
-    """{ "map" : [["blue", "brown", "yellow"], ["lightgreen", "yellow", "blue"], ["grey", "grey", "darkgreen"]] }"""
+    """{ "map" : [["blue", "brown", "yellow"], 
+                  ["lightgreen", "yellow", "blue"], 
+                  ["grey", "grey", "darkgreen"]] }"""
   }
 }

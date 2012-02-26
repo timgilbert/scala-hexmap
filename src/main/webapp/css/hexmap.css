@@ -41,3 +41,17 @@ div#tooltip {
   margin: 0px auto;
   width: 10em;
 }
+
+div#controls {
+  float: right;
+  width: 150px;
+  min-height: 250px;
+  margin: 10px auto;
+  padding: 10px;
+  border: solid #abd;
+  background: #eee;
+}
+
+img.highlight: {
+  z-index:100;
+}

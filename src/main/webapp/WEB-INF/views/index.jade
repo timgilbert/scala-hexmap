@@ -3,10 +3,22 @@
 - attributes("header") = capture
   :javascript
     $(function() {
-      populate(getHexMap(12, 8));
+      populate(getHexMap(10, 6));
     });
     $(function() {
       $("#newMap").click(getNewMap);
+      $("#highlight").click(function(event) {
+        highlightHex(1,1);
+        highlightHex(1,2);
+        highlightHex(2,1);
+        highlightHex(2,2);
+      });
+      $("#randomMap").click(function(event) {
+        populate(getHexMap(10, 6));
+      });
+      $("#deHighlight").click(function(event) {
+        $(".highlight", "#hexmap").remove();
+      });
     });
   
 / body starts here
@@ -14,22 +26,33 @@
 p
 
 #controls
-  button#newMap New Map
+  button#randomMap New Random Map
+  button#newMap Server Map
+  button#highlight Highlight Test
+  button#deHighlight Remove Highlights
 
 #hexmap
 
 #templates.hidden
   h1 Templates
   
+  / class="base" tiles are the lowest parts of the map
   .tile.blue
-    img(src="images/tiles/hex-blue.png" width="92" height="80")
+    img(src="images/tiles/hex-blue.png" width="92" height="80" class="base")
   .tile.brown
-    img(src="images/tiles/hex-brown.png" width="92" height="80")
+    img(src="images/tiles/hex-brown.png" width="92" height="80" class="base")
   .tile.darkgreen
-    img(src="images/tiles/hex-darkgreen.png" width="92" height="80")
+    img(src="images/tiles/hex-darkgreen.png" width="92" height="80" class="base")
   .tile.grey
-    img(src="images/tiles/hex-grey.png" width="92" height="80")
+    img(src="images/tiles/hex-grey.png" width="92" height="80" class="base")
   .tile.lightgreen
-    img(src="images/tiles/hex-lightgreen.png" width="92" height="80")
+    img(src="images/tiles/hex-lightgreen.png" width="92" height="80" class="base")
   .tile.yellow
-    img(src="images/tiles/hex-yellow.png" width="92" height="80")
+    img(src="images/tiles/hex-yellow.png" width="92" height="80" class="base")
+  .tile.white
+    img(src="images/tiles/hex-white.png" width="92" height="80" class="base")
+  .tile.transparent
+    img(src="images/tiles/hex-transparent.png" width="92" height="80")
+  / class="highlight" represents tiles which are overlayed on the base ones
+  .tile.highlight
+    img(src="images/tiles/hex-highlight.png" width="92" height="80" class="highlight")
