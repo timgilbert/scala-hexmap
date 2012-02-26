@@ -8,10 +8,7 @@
     $(function() {
       $("#newMap").click(getNewMap);
       $("#highlight").click(function(event) {
-        highlightHex(1,1);
-        highlightHex(1,2);
-        highlightHex(2,1);
-        highlightHex(2,2);
+        $("[data-column=3]", "#hexmap").highlightHex("red");
       });
       $("#randomMap").click(function(event) {
         populate(getHexMap(10, 6));
@@ -34,6 +31,9 @@ p
 #hexmap
 
 #templates.hidden
+  / I'm not completely sure these are set up optimally at this point, but basically 
+  / every tile is contained in a div which is used to locate it.  The tile images 
+  / themselves also have classes which are used to locate them on the map later.
   h1 Templates
   
   / class="base" tiles are the lowest parts of the map
@@ -54,7 +54,7 @@ p
   .tile.transparent
     img(src="images/tiles/hex-transparent.png" width="92" height="80")
   / class="highlight" represents tiles which are overlayed on the base ones
-  .tile.highlight
+  .tile.highlight-yellow
     img(src="images/tiles/highlight-yellow.png" width="92" height="80" class="highlight")
-  .tile.redhighlight
+  .tile.highlight-red
     img(src="images/tiles/highlight-red.png" width="92" height="80" class="highlight")

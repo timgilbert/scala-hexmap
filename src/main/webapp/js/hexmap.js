@@ -42,7 +42,10 @@ function populate(hexmap) {
       // Add some event handling
       tile.bind("mouseover", function(event) {
         //$(this).highlightHex();
-        $.tooltip("Hex position (" + $(this).data("row") + ", " + $(this).data("column") + ")");
+        var row = $(this).data("row");
+        var column = $(this).data("column");
+        $.tooltip("Hex position (" + row + ", " + column + ")");
+        //highlightHex(row, column);
       });
     }
   }
@@ -67,6 +70,15 @@ function placeTile(name, x, y) {
 }
 
 /*
+  Set up event handling
+*/
+$(function() {
+  $(".base", "#hexmap").live("click", function() {
+    $(this).highlightHex();
+  });
+});
+
+/*
   jQuery extension to place a tile based on row and column data 
   attached to the element set
 */
@@ -86,7 +98,12 @@ function placeTile(name, x, y) {
     // We store the row and column in the tile for 
     // use in the tooltip stuff
     this.data({"row": row, "column": column});
-
+    
+    // If the tile is class "base", we'll insert row and col as attributes
+    if (this.hasClass("base")) {
+      this.attr("data-row", row).attr("data-column", column);
+    }
+    
     var tile_width = this.attr("width");
     var tile_height = this.attr("height");
 
@@ -115,28 +132,19 @@ function placeTile(name, x, y) {
   }
 })(jQuery);
 
-/*
-  Draw a highlight on the given hex
-*/
-function highlightHex(row, column) {
-  var tile = $(".highlight", "#templates").children().clone();
-  
-  //console.debug("Highlighting " + row + "," + column);
-  tile.hexMapPosition(row, column).appendTo($('#hexmap'));
-}
-
 // hmm
 (function($) {
-  $.fn.highlightHexXXX = function(row, column) {
+  $.fn.highlightHex = function(color) {
+    color = (color == null) ? "yellow" : color;
     
-    var row = $(this).data("row");
-    var column = $(this).data("column");
-    
-    var tile = $(".highlight", "#templates").children().clone();
-  
-    var style = {"z-index": 100};
-    
-    tile.hexMapPosition(row, column, style).appendTo($('#hexmap'));
+    $(this).each(function() {
+      var row = $(this).data("row");
+      var column = $(this).data("column");
+
+      var tile = $(".highlight-" + color, "#templates").children().clone();
+
+      tile.hexMapPosition(row, column).appendTo($('#hexmap'));
+    });
     return this;
   }
 })(jQuery);
