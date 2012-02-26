@@ -1,3 +1,10 @@
+/*
+  jQuery routines for dealing with the hexmap
+  
+  TODO: really need to normalize row / column notation.  Currently 
+  it incorrectly uses row as the y coordinate
+*/
+
 /* 
   Return a list of lists of strings. The top-level list 
   represents columns, and each column list is a series of 
@@ -44,7 +51,7 @@ function populate(hexmap) {
         //$(this).highlightHex();
         var row = $(this).data("row");
         var column = $(this).data("column");
-        $.tooltip("Hex position (" + row + ", " + column + ")");
+        $.tooltip("Hex position (row " + row + ", column " + column + ")");
         //highlightHex(row, column);
       });
     }
@@ -79,8 +86,7 @@ $(function() {
 });
 
 /*
-  jQuery extension to place a tile based on row and column data 
-  attached to the element set
+  jQuery extension to add a tooltip to the screen
 */
 (function($) {
   $.tooltip = function(message) {
@@ -91,6 +97,8 @@ $(function() {
 /*
   jQuery extension to place a tile based on row and column data 
   attached to the element set
+  
+  TODO should probably revisit this API
 */
 (function($) {
   $.fn.hexMapPosition = function(row, column, additionalStyle) {
@@ -132,7 +140,13 @@ $(function() {
   }
 })(jQuery);
 
-// hmm
+
+/*
+  Function to overlay a highlight on a particular hex
+  
+  TODO: should toggle highlight on or off
+  BUG: when a highlight is set, it currently eats clicks so the overlayed tile doesn't get them
+*/
 (function($) {
   $.fn.highlightHex = function(color) {
     color = (color == null) ? "yellow" : color;
@@ -148,3 +162,74 @@ $(function() {
     return this;
   }
 })(jQuery);
+
+/* 
+  Custom selector to find base tiles in the grid at (x,y)
+*/
+(function($) {
+  $.expr[":"].grid = function(element, index, meta) {
+    if (! $(element).hasClass("base")) {
+      return false;
+    }
+    
+    // Validate input
+    var params = meta[3].split(",");
+    if (params.length != 2) {
+      console.error(":grid selector requires two arguments, got", params);
+      return false;
+    }
+    var requestedRow = Number(params[0]);
+    if (isNaN(requestedRow)) {
+      console.error(":grid selector row parameter requires a number, got", params[0]);
+      return false;
+    }
+    var requestedColumn = Number(params[1]);
+    if (isNaN(requestedColumn)) {
+      console.error(":grid selector column parameter requires a number, got", params[1]);
+      return false;
+    }
+    
+    //console.debug("r:", requestedRow, "c:", requestedColumn);
+    return ($(element).attr("data-row") == requestedRow) && 
+           ($(element).attr("data-column") == requestedColumn) ;
+  }
+})(jQuery);
+
+
+/*
+  Given a list of (x,y) coordinates, return it as an element set
+  
+  This implementation is ridiculous.  There's got to be a better way but
+  I can't for the life of me figure out how to get $().add() to work, so 
+  instead I'm constructing a big unwieldy constructor on the fly
+*/
+function selectPath(path) {
+  var selectors = [];
+  for (var i = 0; i < path.length; i++) {
+    var point = path[i];
+    if (point.length != 2) {
+      console.info("Skipping over malformed point", point, "in selectPath()");
+      continue;
+    }
+    var column = point[0];
+    var row = point[1];
+    
+    selectors.push("[data-row=" + row + "][data-column=" + column + "]");
+  }
+  
+  var finalSelector = selectors.join(", ");
+  //console.debug("final:", finalSelector);
+  return $("#hexmap").find(finalSelector);
+}
+
+function testPath() {
+  var path = [[0,1], [1,1], [2,2], [1,2]];
+  selectPath(path).highlightHex();
+}
+
+/*
+  Return the base hex tile at the given coordinates
+*/
+function selectHex(row, column) {
+  return $(":grid(" + column + "," + row + ")", "#hexmap");
+}

@@ -8,8 +8,11 @@ html, body {
   margin:0;
   padding: 0;
   height: 100%;
+  font-family: Verdana, sans-serif;
 }
-
+h1 {
+  font: italic 20px Verdana, sans-serif;
+}
 div#container {
   min-height: 100%;
   position: relative;
@@ -38,8 +41,8 @@ div.hidden {
 }
 
 div#tooltip {
-  margin: 0px auto;
-  width: 10em;
+  margin: 10px auto;
+  width: 25em;
 }
 
 div#controls {
@@ -52,6 +55,9 @@ div#controls {
   background: #eee;
 }
 
-img.highlight: {
+img.highlight-red: {
+  z-index:150;
+}
+img.highlight-yellow: {
   z-index:100;
 }
