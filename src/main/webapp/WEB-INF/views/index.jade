@@ -1,0 +1,44 @@
+- attributes("title") = "Hex Map"
+
+- attributes("header") = capture
+  :javascript
+    $(function() {
+      populate(getHexMap(12, 8));
+    });
+    $(function() {
+      $("#newMap").click(function(event) {
+        console.debug("Hey there");
+        // Get the new map via Ajax
+        $.getJSON(
+          "/map/new.json", {}, 
+          function(response) {
+            console.debug("Resp: " + response);
+          }
+        );
+      });
+    });
+  
+/ body starts here
+
+p
+
+#controls
+  button#newMap New Map
+
+#hexmap
+
+#templates.hidden
+  h1 Templates
+  
+  .tile.blue
+    img(src="images/tiles/hex-blue.png" width="92" height="80")
+  .tile.brown
+    img(src="images/tiles/hex-brown.png" width="92" height="80")
+  .tile.darkgreen
+    img(src="images/tiles/hex-darkgreen.png" width="92" height="80")
+  .tile.grey
+    img(src="images/tiles/hex-grey.png" width="92" height="80")
+  .tile.lightgreen
+    img(src="images/tiles/hex-lightgreen.png" width="92" height="80")
+  .tile.yellow
+    img(src="images/tiles/hex-yellow.png" width="92" height="80")
