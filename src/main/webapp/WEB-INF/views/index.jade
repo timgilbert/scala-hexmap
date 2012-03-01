@@ -3,17 +3,17 @@
 - attributes("header") = capture
   :javascript
     $(function() {
-      populate(getHexMap(10, 6));
+      populate(generateRandomHexMap(10, 6));
     });
     $(function() {
-      $("#newMap").click(getNewMap);
+      $("#serverRandomMap").click(getNewRandomServerMap);
       $("#randomPath").click(getServerRandomPath);
       $("#highlight").click(function(event) {
         //$("[data-column=3]", "#hexmap").highlightHex("red");
         selectPath([[1,1], [1,2], [2,1], [2,2]]).highlightHex("red");
       });
-      $("#randomMap").click(function(event) {
-        populate(getHexMap(10, 6));
+      $("#jsRandomMap").click(function(event) {
+        populate(generateRandomHexMap(10, 6));
       });
       $("#deHighlight").click(function(event) {
         $(".highlight", "#hexmap").remove();
@@ -25,8 +25,8 @@
 p
 
 #controls
-  button#randomMap New Random Map
-  button#newMap Server Map
+  button#jsRandomMap JS Random Map
+  button#serverRandomMap Server Random Map
   button#randomPath Random Path
   button#highlight Highlight Test
   button#deHighlight Remove Highlights

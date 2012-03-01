@@ -23,6 +23,21 @@ function getHexMap(numColumns, numRows) {
   return columns;
 }
 
+/*
+  Generate a new hex map in the format we're expecting from the server
+*/
+function generateRandomHexMap(numColumns, numRows) {
+  var cells = [];
+  for (var x = 0; x < numColumns; x++) {
+    for (var y = 0; y < numRows; y++) {
+      var color = randomTile();
+      var cell = { "x": x, "y": y, "data": { "color": color } };
+      cells.push(cell);
+    }
+  }
+  return cells;
+}
+
 // For testing - return a random tile
 function randomTile() {
   // There's probably a way to get this out of the DOM via jQuery
@@ -39,32 +54,32 @@ function randomTile() {
 function populate(hexmap) {
   // Clear the old map, if any
   $('#hexmap').children().remove();
-  for (var x = 0; x < hexmap.length; x++) {
-    var column = hexmap[x];
-    for (var y = 0; y < column.length; y++) {
+  
+  for (index in hexmap) {
+    var x = hexmap[index].x, y = hexmap[index].y;
+    var data = hexmap[index].data;
+    var color = data.color;
 
-      // clone the tile and place it
-      var tile = placeTile(column[y], x, y);
+    // clone the tile and place it
+    var tile = placeTile(color, x, y);
 
-      // Add some event handling
-      tile.bind("mouseover", function(event) {
-        //$(this).highlightHex();
-        var row = $(this).data("row");
-        var column = $(this).data("column");
-        $.tooltip("Hex position (row " + row + ", column " + column + ")");
-        //highlightHex(row, column);
-      });
-    }
+    // Add some event handling
+    tile.bind("mouseover", function(event) {
+      //$(this).highlightHex();
+      var row = $(this).data("row");
+      var column = $(this).data("column");
+      $.tooltip("Hex position (row " + row + ", column " + column + ")");
+      //highlightHex(row, column);
+    });
   }
 }
 
 /*
   Get a new map from the server
-  XXX rename this
 */
-function getNewMap(event) {
+function getNewRandomServerMap(event) {
   // Get a new map via Ajax
-  $.getJSON("/map/new.json", function(data) {
+  $.getJSON("/map/new-random.json", function(data) {
       populate(data["map"]);
   });
 }

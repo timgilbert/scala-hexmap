@@ -59,11 +59,10 @@ class HexMap (h: Int, w: Int) {
   }
   
   def allHexes(): JArray = {
-    val hexes: Seq[JValue] = for (x <- 1 to width; y <- 1 to height) yield {
+    for (x <- 1 to width; y <- 1 to height) yield {
       val h: Hex = hex(x, y)
       h.toJson()
     }
-    hexes
   }
   
   /**
