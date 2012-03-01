@@ -1,6 +1,9 @@
 // Hex definition
 package com.github.timgilbert.hexmap
 
+import net.liftweb.json._
+import net.liftweb.json.JsonDSL._
+
 class InvalidAddressException(msg: String) extends IllegalArgumentException
 
 /**
@@ -53,6 +56,26 @@ class HexMap (h: Int, w: Int) {
   /** @return true if the given address refers to a valid point on the map */
   def validAddress(a: Address): Boolean = {
     a.x >= 1 && a.y >= 1 && a.y <= height && a.x <= width
+  }
+  
+  def allHexes(): JArray = {
+    val hexes: Seq[JValue] = for (x <- 1 to width; y <- 1 to height) yield {
+      val h: Hex = hex(x, y)
+      h.toJson()
+    }
+    hexes
+  }
+  
+  /**
+   * Produce a JSON serialization of this map
+   */
+  def toJson(): String = {
+    //pretty(render(List(1, 1)))
+    
+    
+    val result = ("map" -> allHexes())
+    //return "{ 'map': [ [] ] }"
+    pretty(render(result))
   }
 }
 
@@ -135,6 +158,9 @@ class Hex(context: HexMap, address: Address, data: HexData) {
     "Hex(" + address.x + "," + address.y + ")"
   }
   
+  def toJson(): JValue = {
+    ("x" -> address.x) ~ ("y" -> address.y) ~ ("data" -> data.toJson())
+  }
   // All of the neighbors of this hex
   def neighbors(): Map[Cardinal, Hex] = {
     context.getFaceNeighbors(address)

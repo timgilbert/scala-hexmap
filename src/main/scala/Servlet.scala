@@ -15,6 +15,16 @@ class HexMapServlet extends ScalatraServlet with ScalateSupport {
                   ["lightgreen", "yellow", "blue"], 
                   ["grey", "grey", "darkgreen"]] }"""
   }
+  
+  get("/map/new-random.json") {
+    val height = params get "height" map (_.toInt) getOrElse 10
+    val width =  params get "width"  map (_.toInt) getOrElse 10
+    
+    val hexmap = RandomHexMapStore.create(width, height)
+    contentType = "application/json"
+    hexmap.toJson()
+  }
+  
 
   /** todo: increase randomness */
   get("/map/random-path.json") {
